@@ -1,0 +1,1560 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>BEAST MODE</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<style>
+:root { 
+  --bg: #0a0a0a; 
+  --card: #1a1a1a; 
+  --accent: #ff3366; 
+  --accent2: #00ffaa; 
+  --orange: #ff9500;
+  --border: #333;
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+body { 
+  background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%); 
+  color: white; 
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif; 
+  min-height: 100vh; 
+  padding: 12px 12px 140px 12px;
+  overflow-x: hidden;
+}
+
+/* HEADER */
+h1 { 
+  text-align:center; 
+  font-size: 2.2rem; 
+  background: linear-gradient(90deg, var(--accent), var(--accent2)); 
+  -webkit-background-clip: text; 
+  -webkit-text-fill-color: transparent; 
+  margin: 12px 0 20px;
+  font-weight: 800;
+  letter-spacing: 2px;
+}
+
+/* IP TOGGLE SECTION */
+.ip-toggle-section {
+  display: flex;
+  gap: 10px;
+  margin: 0 auto 20px;
+  max-width: 500px;
+  align-items: stretch;
+}
+#ipInput { 
+  flex: 1;
+  padding: 12px;
+  font-size: 1rem;
+  text-align: center;
+  background: var(--orange);
+  color: black;
+  border: 3px solid black;
+  border-radius: 12px;
+  font-weight: bold;
+  outline: none;
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+}
+#ipToggle {
+  flex: 1;
+  padding: 12px;
+  background: var(--orange);
+  color: black;
+  border: 3px solid black;
+  border-radius: 12px;
+  font-weight: bold;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+
+/* CARDS */
+.card {
+  background: var(--card);
+  border-radius: 16px;
+  margin: 12px auto;
+  max-width: 500px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+  border: 1px solid var(--border);
+  overflow: hidden;
+}
+
+.card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 18px;
+  background: rgba(255,255,255,0.02);
+  cursor: pointer;
+  min-height: 64px;
+}
+
+.card-title {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: white;
+  flex: 1;
+  text-align: left;
+}
+
+.card-badge {
+  display: inline-block;
+  background: var(--orange);
+  color: black;
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: bold;
+  margin-left: 8px;
+}
+
+.expand-icon {
+  font-size: 24px;
+  color: #888;
+  transition: transform 0.3s ease;
+  margin-left: 12px;
+}
+.expand-icon.open { transform: rotate(180deg); }
+
+.card-content {
+  padding: 0 16px;
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.4s ease, padding 0.4s ease;
+}
+.card-content.open {
+  max-height: 800px;
+  padding: 16px;
+}
+
+/* BUTTONS */
+.btn {
+  padding: 12px 20px;
+  border-radius: 12px;
+  border: none;
+  font-weight: 600;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  outline: none;
+}
+.btn:active { transform: scale(0.96); }
+
+.btn-primary {
+  background: var(--orange);
+  color: black;
+  border: 2px solid black;
+}
+
+.btn-secondary {
+  background: #2a2a2a;
+  color: var(--orange);
+  border: 1px solid var(--border);
+}
+
+.btn-small {
+  padding: 8px 14px;
+  font-size: 0.85rem;
+}
+
+/* LISTS */
+.list-container {
+  max-height: 300px;
+  overflow-y: auto;
+  padding: 8px;
+  background: #0f0f0f;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  margin-top: 12px;
+  -webkit-overflow-scrolling: touch;
+}
+
+.list-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px;
+  background: #1f1f1f;
+  margin: 8px 0;
+  border-radius: 10px;
+  position: relative;
+}
+.list-item.checked {
+  opacity: 0.5;
+  text-decoration: line-through;
+}
+.list-item input[type="checkbox"] {
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+}
+.list-item-text {
+  flex: 1;
+  font-size: 0.95rem;
+  color: #ddd;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.list-item-delete {
+  background: none;
+  border: none;
+  color: var(--accent);
+  font-size: 24px;
+  font-weight: bold;
+  cursor: pointer;
+  padding: 0 8px;
+}
+
+/* FORM INPUTS */
+.input-group {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+.input {
+  padding: 13px 12px;
+  border-radius: 12px;
+  background: #0f0f0f;
+  border: 2px solid var(--orange);
+  color: white;
+  text-align: center;
+  font-weight: 600;
+  font-size: 0.9rem;
+  outline: none;
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+}
+.input:read-only {
+  opacity: 0.7;
+}
+.input-full {
+  grid-column: 1 / -1;
+}
+
+/* STATS */
+.stats-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 12px 0;
+  font-size: 0.95rem;
+  color: #ccc;
+}
+.stats-text {
+  font-weight: 600;
+}
+
+/* ACTION ROW */
+.action-row {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+/* LOCATION SELECT */
+#locationSelect {
+  width: 100%;
+  padding: 12px;
+  background: #0f0f0f;
+  color: white;
+  border: 2px solid var(--orange);
+  border-radius: 12px;
+  font-size: 1rem;
+  margin-bottom: 12px;
+  font-weight: 600;
+}
+
+/* IP DISPLAY */
+.ip-display {
+  background: #0f0f0f;
+  border-radius: 12px;
+  padding: 16px;
+  text-align: center;
+  border: 2px solid var(--orange);
+  margin: 10px 0;
+}
+.ip-text {
+  color: white;
+  font-size: 1.1rem;
+  font-weight: bold;
+  margin: 8px 0;
+}
+.ip-label {
+  color: #888;
+  font-size: 0.85rem;
+  margin-bottom: 4px;
+}
+
+/* FLOATING ACTION BUTTONS */
+.fab-row {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 12px;
+  z-index: 9999;
+  background: rgba(26, 26, 26, 0.95);
+  padding: 12px 16px;
+  border-radius: 50px;
+  backdrop-filter: blur(10px);
+  border: 1px solid var(--border);
+  box-shadow: 0 8px 30px rgba(0,0,0,0.8);
+  max-width: 95vw;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.fab {
+  width: 56px;
+  height: 56px;
+  min-width: 56px;
+  border-radius: 50%;
+  border: 3px solid black;
+  color: black;
+  font-size: 18px;
+  font-weight: 700;
+  background: var(--orange);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+}
+.fab:active {
+  transform: scale(0.92);
+}
+
+/* TOAST */
+#toast {
+  position: fixed;
+  bottom: 100px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--orange);
+  color: black;
+  padding: 12px 24px;
+  border-radius: 30px;
+  font-weight: 700;
+  font-size: 0.95rem;
+  z-index: 10000;
+  opacity: 0;
+  transition: all 0.4s;
+  border: 3px solid black;
+  pointer-events: none;
+  max-width: 90vw;
+  text-align: center;
+}
+#toast.show {
+  opacity: 1;
+  bottom: 120px;
+}
+
+/* ROTATE SECTION */
+.rotate-section {
+  display: flex;
+  gap: 8px;
+  margin: 10px 0;
+}
+.rotate-input {
+  flex: 1;
+  padding: 10px;
+  border-radius: 10px;
+  background: var(--orange);
+  border: 2px solid black;
+  color: black;
+  font-weight: 600;
+  outline: none;
+}
+.rotate-btn {
+  padding: 10px 20px;
+  border-radius: 10px;
+  background: var(--orange);
+  color: black;
+  border: 2px solid black;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+/* SCROLLBAR */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: #0f0f0f;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--orange);
+  border-radius: 4px;
+}
+
+/* RESPONSIVE */
+@media (max-width: 380px) {
+  h1 { font-size: 1.8rem; }
+  .card-title { font-size: 1.1rem; }
+  .fab { width: 50px; height: 50px; min-width: 50px; font-size: 16px; }
+  .input-group { grid-template-columns: 1fr; }
+  .input { font-size: 0.85rem; padding: 11px 10px; }
+  #ipInput { flex: 0 0 45px; padding: 10px 4px; font-size: 0.9rem; }
+  #postCount, #filteredCount { padding: 10px 8px !important; font-size: 0.85rem !important; min-width: 35px !important; }
+  #ipToggle { font-size: 0.85rem; padding: 10px; }
+}
+
+@media (max-width: 450px) {
+  .input { font-size: 0.85rem; }
+  #ipInput { flex: 0 0 50px; padding: 10px 5px; font-size: 0.95rem; }
+  #postCount, #filteredCount { padding: 10px 10px !important; font-size: 0.9rem !important; }
+}
+</style>
+</head>
+<body>
+
+<!-- IP TOGGLE -->
+<div class="ip-toggle-section">
+  <input type="text" id="ipInput" placeholder="IP" value="1" maxlength="16">
+  <div style="flex: 1; display: flex; gap: 6px; max-width: 500px;">
+    <div id="postCount" style="flex: 1; padding: 10px 8px; background: #0f0f0f; border: 2px solid var(--orange); border-radius: 12px; font-weight: bold; font-size: 0.95rem; text-align: center; color: var(--orange); white-space: nowrap; min-width: 0;">0</div>
+    <div id="filteredCount" style="flex: 1; padding: 10px 8px; background: #0f0f0f; border: 2px solid #d32f2f; border-radius: 12px; font-weight: bold; font-size: 0.95rem; text-align: center; color: #d32f2f; white-space: nowrap; min-width: 0;">0</div>
+  </div>
+  <button id="ipToggle">192.168.1.x</button>
+</div>
+
+<!-- PROFILE CARD -->
+<div class="card">
+  <div class="card-header" onclick="toggleCard('profile')">
+    <div class="card-title">👤 Profile</div>
+    <span class="expand-icon" id="profileIcon">▼</span>
+  </div>
+  <div class="card-content" id="profileContent">
+    <div class="input-group">
+      <input type="text" id="profileName" placeholder="Name" readonly class="input">
+      <input type="text" id="profileUser" placeholder="Username" class="input">
+      <input type="text" id="profilePass" placeholder="Password" class="input">
+      <input type="text" id="profileID" placeholder="ID" readonly class="input">
+    </div>
+    <div class="input-group">
+      <button onclick="copyText('profileName'); triggerLua()" class="btn btn-primary btn-small">Copy Email</button>
+      <button onclick="copyText('profileUser')" class="btn btn-primary btn-small">Copy User</button>
+      <button onclick="copyText('profilePass'); triggerLua()" class="btn btn-primary btn-small">Copy Pass</button>
+      <button onclick="copyText('profileID')" class="btn btn-primary btn-small">Copy ID</button>
+    </div>
+    <div class="action-row" style="margin: 12px 0;">
+      <button onclick="prevProfile()" class="btn btn-secondary" style="flex: 1;">◀ Prev</button>
+      <button onclick="generatePassword(); triggerLua()" class="btn btn-secondary" style="flex: 1;">🔑 Gen</button>
+      <button onclick="pasteUsername()" class="btn btn-secondary" style="flex: 1;">📋 Paste</button>
+      <button onclick="nextProfile()" class="btn btn-secondary" style="flex: 1;">Next ▶</button>
+    </div>
+    <button id="saveProfileBtn" onclick="saveProfile()" class="btn btn-primary" style="width: 100%;">💾 Save Profile</button>
+  </div>
+</div>
+
+<!-- SUBREDDIT CARD -->
+<div class="card">
+  <div class="card-header" onclick="toggleCard('sub')">
+    <div class="card-title">
+      📍 SubReddit
+      <span class="card-badge" id="subBadge">0/0</span>
+    </div>
+    <span class="expand-icon" id="subIcon">▼</span>
+  </div>
+  <div class="card-content" id="subContent">
+    <select id="locationSelect"></select>
+    <div class="stats-row">
+      <span class="stats-text">Done <span id="subDone">0</span> / <span id="subCount">0</span></span>
+      <div class="action-row">
+        <button id="subrReset" class="btn btn-secondary btn-small">Reset</button>
+        <button id="addSubBtn" class="btn btn-secondary btn-small">+ Add</button>
+      </div>
+    </div>
+    <div class="action-row">
+      <button id="subRefresh" class="btn btn-secondary btn-small" style="flex: 1;">🔄 Refresh</button>
+      <button class="btn btn-secondary btn-small" id="toggleSub" style="flex: 1;">📋 List</button>
+    </div>
+    <div class="list-container" id="subList" style="display:none;"></div>
+  </div>
+</div>
+
+<!-- TEST SUBS CARD -->
+<div class="card">
+  <div class="card-header" onclick="toggleCard('test')">
+    <div class="card-title">
+      🧪 Test Subs
+      <span class="card-badge" id="testBadge">0/0</span>
+    </div>
+    <span class="expand-icon" id="testIcon">▼</span>
+  </div>
+  <div class="card-content" id="testContent">
+    <div class="stats-row">
+      <span class="stats-text">Done <span id="testDone">0</span> / <span id="testCount">0</span></span>
+      <div class="action-row">
+        <button id="testReset" class="btn btn-secondary btn-small">Reset</button>
+        <button id="addTestBtn" class="btn btn-secondary btn-small">+ Add</button>
+      </div>
+    </div>
+    <div class="action-row">
+      <button onclick="loadFromSheet()" class="btn btn-secondary btn-small" style="flex: 1;">🔄 Refresh</button>
+      <button class="btn btn-secondary btn-small" id="toggleTest" style="flex: 1;">📋 List</button>
+    </div>
+    <div class="list-container" id="testList" style="display:none;"></div>
+  </div>
+</div>
+
+<!-- CAPTION CARD -->
+<div class="card">
+  <div class="card-header" onclick="toggleCard('cap')">
+    <div class="card-title">
+      💬 Caption
+      <span class="card-badge" id="capBadge">0/0</span>
+    </div>
+    <span class="expand-icon" id="capIcon">▼</span>
+  </div>
+  <div class="card-content" id="capContent">
+    <div class="stats-row">
+      <span class="stats-text">Used <span id="capUsed">0</span> / <span id="capCount">0</span></span>
+      <div class="action-row">
+        <button id="captionReset" class="btn btn-secondary btn-small">Reset</button>
+        <button id="addCapBtn" class="btn btn-secondary btn-small">+ Add</button>
+      </div>
+    </div>
+    <div class="action-row">
+      <button onclick="updateCaptionsNow()" class="btn btn-secondary btn-small" style="flex: 1;">🔄 Refresh</button>
+      <button class="btn btn-secondary btn-small" id="toggleCap" style="flex: 1;">📋 List</button>
+    </div>
+    <div class="list-container" id="captionList" style="display:none;"></div>
+  </div>
+</div>
+
+<!-- IP & ROTATION CARD -->
+<div class="card">
+  <div class="card-header" onclick="toggleCard('ip')">
+    <div class="card-title">🌐 <span id="ipHeader">Loading IP...</span></div>
+    <span class="expand-icon" id="ipIcon">▼</span>
+  </div>
+  <div class="card-content" id="ipContent">
+    <div class="rotate-section">
+      <button class="rotate-btn" onclick="rotateIP()">🔄 Go</button>
+      <input id="rotateLink" placeholder="http://87.120..." class="rotate-input" />
+    </div>
+    <div class="ip-display">
+      <div class="ip-label">Previous IP</div>
+      <div class="ip-text" id="oldIP">—</div>
+      <div class="ip-label" style="margin-top: 12px;">Current IP</div>
+      <div class="ip-text" id="ip">Loading...</div>
+      <div class="ip-text" id="ipLocation" style="font-size: 0.9rem; color: #aaa; margin-top: 4px;">—</div>
+      <button onclick="refreshAndOpen()" class="btn btn-primary" style="margin-top: 12px; width: 100%;">🔍 Refresh + Scam</button>
+    </div>
+  </div>
+</div>
+
+<!-- FLOATING BUTTONS -->
+<div class="fab-row">
+  <button class="fab" id="fabD" title="DM">D</button>
+  <button class="fab" id="fabN" title="Name">N</button>
+  <button class="fab" id="fabOF" title="OF">OF</button>
+  <button class="fab" id="fabLink" title="Link">🔗</button>
+  <button class="fab" id="comboFab" title="SAP">SAP</button>
+  <button class="fab" id="testComboFab" title="Test">Tes</button>
+  <button class="fab" id="randomSubBtn" title="Random">R</button>
+  <button class="fab" id="fabCreate" title="Create">+</button>
+</div>
+
+<div id="toast"></div>
+
+<script>
+const SHEET_URL = "https://script.google.com/macros/s/AKfycbz6DdYO7rdlpmRL_dCqFm2m1_tCNkK_VRdHRIHR0ebARYdOZWKnccKU1didAWYaKyQqRg/exec";
+const PROFILE_URL = SHEET_URL;
+
+let locations = {};
+let currentLocation = localStorage.getItem('currentLocation') || '';
+let subs = [];
+let testSubs = [];
+let captions = [];
+let randomSubList = [];
+
+let subChecked = JSON.parse(localStorage.getItem('subCh3') || '{}');
+let testChecked = JSON.parse(localStorage.getItem('testCh3') || '{}');
+let subIndex = parseInt(localStorage.getItem('subIdx3') || '0');
+let testIndex = parseInt(localStorage.getItem('testIdx3') || '0');
+let capUsed = JSON.parse(localStorage.getItem('capUs3') || '{}');
+let dmUsed = JSON.parse(localStorage.getItem('dmUsed') || '{}');
+let nameUsed = JSON.parse(localStorage.getItem('nameUsed') || '{}');
+let ofUsed = JSON.parse(localStorage.getItem('ofUsed') || '{}');
+
+const dmTexts = [ "I'm new here, come take a peek at my page below and enjoy a little surprise I left for you", "Still figuring things out here, check out my page and grab your free surprise", "Just getting started here, have a look at my page and claim your cute freebie", "I'm the new girl here, check my page and treat yourself to a sweet surprise", "Super new here, come visit my page and enjoy a little gift from me", "Just joined, have a look at my page and don't miss the free surprise waiting for you", "Newbie alert, come check my page and grab the adorable surprise I made for you", "I'm fresh here, take a moment to visit my page and get your special little treat", "Still new around here, check out my page and enjoy your free surprise", "Just starting out here, come see my page and pick up the cute surprise I prepared for you" ];
+const names = [ "Sophyy 🌸", "Sophiaa 🌷", "Sophi 💋", "Sophiya 🌺", "Sofayuh 😍", "Soffie 🌼", "Sofey 💖", "Soffyy 😝", "Sofy 💘", "Sofiy 🦋", "Sofiahh 🍬", "Sofiaaaa 💕", "Sophie 😝", "Sophia 😊", "Sofie 🙈", "Sofiaa 😍", "Sofia 🍑", "Sofiyah ✨", "Sofiya 💞", "Sofii 💕", "Sofiee 😘", "Sofiah 💗", "Sophiyaaa 😍", "Sophiie 🙈", "Sofiyaaa ✨" ];
+const ofLines = [ "OF (nudes&dms)😜", "OF (nudez&seks)😜", "OF (nudes&dms)🙈" ];
+const linkUrl = "https://tapformysocials.me/girlygirl";
+
+// Reddit username checker
+let usernameCheckInterval = null;
+
+async function checkRedditUsername(username) {
+  if (!username || username.trim() === '') {
+    return 'empty';
+  }
+  
+  const cleanUsername = username.trim();
+  
+  try {
+    // Use a CORS proxy or direct fetch with proper headers
+    // Method 1: Try to fetch the user page HTML (works better than JSON for banned detection)
+    const response = await fetch(`https://www.reddit.com/user/${cleanUsername}.json`, {
+      method: 'GET',
+      headers: {
+        'Accept': 'application/json'
+      }
+    });
+    
+    // Get the response text first
+    const text = await response.text();
+    
+    try {
+      const data = JSON.parse(text);
+      
+      // Check for various error conditions
+      if (data.error === 404 || data.message === 'Not Found') {
+        return 'notfound';
+      }
+      
+      // Check if we got valid user data
+      if (data && data.data && data.data.children) {
+        // User exists and has posts - likely active
+        return 'active';
+      }
+      
+      // If data.data exists but no children, could be banned or no posts
+      if (data && data.data && !data.data.children) {
+        // Try to check the about endpoint
+        const aboutResponse = await fetch(`https://www.reddit.com/user/${cleanUsername}/about.json`);
+        const aboutData = await aboutResponse.json();
+        
+        if (aboutData && aboutData.data && aboutData.data.is_suspended) {
+          return 'banned';
+        }
+        
+        if (aboutData && aboutData.data && aboutData.data.name) {
+          // User exists but has no posts - still active account
+          return 'active';
+        }
+        
+        return 'banned';
+      }
+      
+      return 'banned';
+      
+    } catch (parseError) {
+      // If we can't parse JSON, check if the text contains ban indicators
+      if (text.includes('banned') || text.includes('suspended') || text.includes('This account has been')) {
+        return 'banned';
+      }
+      
+      if (text.includes('nobody on Reddit goes by that name') || text.includes('page not found')) {
+        return 'notfound';
+      }
+      
+      return 'error';
+    }
+    
+  } catch (error) {
+    console.error('Error checking username:', error);
+    
+    // As a fallback, try opening in hidden iframe to check the actual page
+    return await checkViaIframe(cleanUsername);
+  }
+}
+
+// Fallback method using iframe to detect page content
+async function checkViaIframe(username) {
+  return new Promise((resolve) => {
+    const iframe = document.createElement('iframe');
+    iframe.style.display = 'none';
+    iframe.style.position = 'absolute';
+    iframe.style.width = '0';
+    iframe.style.height = '0';
+    
+    let resolved = false;
+    
+    const cleanup = () => {
+      if (iframe.parentNode) {
+        document.body.removeChild(iframe);
+      }
+    };
+    
+    const resolveOnce = (status) => {
+      if (!resolved) {
+        resolved = true;
+        cleanup();
+        resolve(status);
+      }
+    };
+    
+    iframe.onload = () => {
+      try {
+        // Try to read iframe content
+        const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
+        const bodyText = iframeDoc.body ? iframeDoc.body.innerText.toLowerCase() : '';
+        
+        if (bodyText.includes('banned') || bodyText.includes('suspended') || bodyText.includes('this account has been')) {
+          resolveOnce('banned');
+        } else if (bodyText.includes('nobody on reddit goes by that name') || bodyText.includes('page not found')) {
+          resolveOnce('notfound');
+        } else if (bodyText.length > 100) {
+          // If we got substantial content, account is probably active
+          resolveOnce('active');
+        } else {
+          resolveOnce('error');
+        }
+      } catch (e) {
+        // CORS will prevent reading, but we can at least check if it loaded
+        resolveOnce('error');
+      }
+    };
+    
+    iframe.onerror = () => {
+      resolveOnce('error');
+    };
+    
+    // Timeout after 5 seconds
+    setTimeout(() => {
+      resolveOnce('error');
+    }, 5000);
+    
+    document.body.appendChild(iframe);
+    iframe.src = `https://www.reddit.com/user/${username}`;
+  });
+}
+
+async function updateSaveButtonColor() {
+  const username = document.getElementById('profileUser').value.trim();
+  const saveBtn = document.getElementById('saveProfileBtn');
+  
+  if (!username) {
+    // Reset to default orange if no username
+    saveBtn.style.backgroundColor = 'var(--orange)';
+    saveBtn.style.border = '2px solid black';
+    document.getElementById('postCount').textContent = '0';
+    return;
+  }
+  
+  const status = await checkRedditUsername(username);
+  
+  switch(status) {
+    case 'active':
+      // Green for active account
+      saveBtn.style.backgroundColor = '#2e7d32';
+      saveBtn.style.border = '2px solid #1b5e20';
+      saveBtn.style.color = 'white';
+      break;
+    case 'banned':
+      // Red for banned account
+      saveBtn.style.backgroundColor = '#d32f2f';
+      saveBtn.style.border = '2px solid #b71c1c';
+      saveBtn.style.color = 'white';
+      break;
+    case 'notfound':
+      // Retain original color (orange) if not found
+      saveBtn.style.backgroundColor = 'var(--orange)';
+      saveBtn.style.border = '2px solid black';
+      saveBtn.style.color = 'black';
+      break;
+    default:
+      // Keep orange for errors or unknown states
+      saveBtn.style.backgroundColor = 'var(--orange)';
+      saveBtn.style.border = '2px solid black';
+      saveBtn.style.color = 'black';
+  }
+  
+  // Fetch post count
+  await updatePostCount(username);
+}
+
+async function updatePostCount(username) {
+  if (!username || username.trim() === '') {
+    document.getElementById('postCount').textContent = '0';
+    document.getElementById('filteredCount').textContent = '0';
+    return;
+  }
+  
+  try {
+    const response = await fetch(`https://www.reddit.com/user/${username.trim()}.json?limit=100`);
+    
+    if (!response.ok) {
+      document.getElementById('postCount').textContent = '0';
+      document.getElementById('filteredCount').textContent = '0';
+      return;
+    }
+    
+    const data = await response.json();
+    
+    if (data && data.data && data.data.children) {
+      let activeCount = 0;
+      let filteredCount = 0;
+      
+      data.data.children.forEach(post => {
+        const postData = post.data;
+        
+        // Check if post is removed, filtered, or deleted
+        if (postData.removed_by_category || 
+            postData.spam || 
+            postData.banned_by || 
+            postData.removed || 
+            postData.author === '[deleted]' ||
+            postData.selftext === '[removed]') {
+          filteredCount++;
+        } else {
+          activeCount++;
+        }
+      });
+      
+      document.getElementById('postCount').textContent = activeCount.toString();
+      document.getElementById('filteredCount').textContent = filteredCount.toString();
+    } else {
+      document.getElementById('postCount').textContent = '0';
+      document.getElementById('filteredCount').textContent = '0';
+    }
+  } catch (error) {
+    console.error('Error fetching post count:', error);
+    document.getElementById('postCount').textContent = '0';
+    document.getElementById('filteredCount').textContent = '0';
+  }
+}
+
+function startUsernameChecker() {
+  // Clear any existing interval
+  if (usernameCheckInterval) {
+    clearInterval(usernameCheckInterval);
+  }
+  
+  // Check immediately
+  updateSaveButtonColor();
+  
+  // Then check every 5 seconds
+  usernameCheckInterval = setInterval(() => {
+    updateSaveButtonColor();
+  }, 5000);
+}
+
+function stopUsernameChecker() {
+  if (usernameCheckInterval) {
+    clearInterval(usernameCheckInterval);
+    usernameCheckInterval = null;
+  }
+}
+
+// Listen to username input changes to trigger immediate check
+document.addEventListener('DOMContentLoaded', function() {
+  const usernameInput = document.getElementById('profileUser');
+  if (usernameInput) {
+    usernameInput.addEventListener('input', function() {
+      updateSaveButtonColor();
+    });
+  }
+});
+
+function toggleCard(type) {
+  const content = document.getElementById(type + 'Content');
+  const icon = document.getElementById(type + 'Icon');
+  content.classList.toggle('open');
+  icon.classList.toggle('open');
+}
+
+async function loadFromSheet() {
+  try {
+    const resp = await fetch(SHEET_URL + "?action=readAll&t=" + Date.now());
+    const data = await resp.json();
+    
+    const sheet1 = data.sheet1 || [];
+    captions = sheet1.slice(1).map(row => row[4]).filter(Boolean);
+    randomSubList = sheet1.slice(1).map(row => row[5]).filter(Boolean);
+    testSubs = sheet1.slice(1).map(row => row[6]).filter(Boolean);
+
+    const sheet2 = data.sheet2 || [];
+    if (sheet2.length < 1) throw new Error("Sheet2 empty");
+
+    const headers = sheet2[0];
+    locations = {};
+    headers.forEach((loc, colIdx) => {
+      if (loc && typeof loc === 'string' && loc.trim()) {
+        const locSubs = [];
+        for (let r = 1; r < sheet2.length; r++) {
+          const val = sheet2[r][colIdx];
+          if (val && typeof val === 'string' && val.trim()) locSubs.push(val.trim());
+        }
+        if (locSubs.length > 0) locations[loc.trim()] = locSubs;
+      }
+    });
+
+    if (Object.keys(locations).length === 0) locations = JSON.parse(localStorage.getItem('locations3') || '{}');
+    if (captions.length === 0) captions = JSON.parse(localStorage.getItem('caps3') || '[]');
+    if (testSubs.length === 0) testSubs = JSON.parse(localStorage.getItem('testSubs3') || '[]');
+
+    populateLocationSelect();
+    selectLocation(currentLocation || Object.keys(locations)[0] || '');
+    
+    render('testList', testSubs, testChecked);
+    render('captionList', captions, capUsed);
+    updateStats();
+    showToast(`✅ Loaded – ${Object.keys(locations).length} locations`);
+  } catch (e) {
+    console.error(e);
+    locations = JSON.parse(localStorage.getItem('locations3') || '{}');
+    captions = JSON.parse(localStorage.getItem('caps3') || '[]');
+    testSubs = JSON.parse(localStorage.getItem('testSubs3') || '[]');
+    populateLocationSelect();
+    selectLocation(currentLocation || Object.keys(locations)[0] || '');
+    render('testList', testSubs, testChecked);
+    render('captionList', captions, capUsed);
+    updateStats();
+    showToast("⚠️ Offline – using local data");
+  }
+}
+
+function populateLocationSelect() {
+  const select = document.getElementById('locationSelect');
+  select.innerHTML = '<option value="">-- Select Location --</option>';
+  Object.keys(locations).sort().forEach(loc => {
+    const opt = document.createElement('option');
+    opt.value = loc;
+    opt.textContent = loc;
+    select.appendChild(opt);
+  });
+  select.onchange = () => selectLocation(select.value);
+}
+
+function selectLocation(locName) {
+  if (!locName || !locations[locName]) {
+    subs = [];
+    currentLocation = '';
+  } else {
+    subs = locations[locName];
+    currentLocation = locName;
+    const keyPrefix = 'loc_' + btoa(locName).replace(/=/g,'');
+    subChecked = JSON.parse(localStorage.getItem(keyPrefix + '_ch') || '{}');
+    subIndex = parseInt(localStorage.getItem(keyPrefix + '_idx') || '0');
+  }
+  localStorage.setItem('currentLocation', currentLocation);
+  document.getElementById('locationSelect').value = currentLocation;
+  render('subList', subs, subChecked);
+  updateStats();
+}
+
+const save = () => {
+  localStorage.setItem('locations3', JSON.stringify(locations));
+  localStorage.setItem('caps3', JSON.stringify(captions));
+  localStorage.setItem('capUs3', JSON.stringify(capUsed));
+  localStorage.setItem('testSubs3', JSON.stringify(testSubs));
+  localStorage.setItem('testCh3', JSON.stringify(testChecked));
+  localStorage.setItem('testIdx3', testIndex);
+  localStorage.setItem('dmUsed', JSON.stringify(dmUsed));
+  localStorage.setItem('nameUsed', JSON.stringify(nameUsed));
+  localStorage.setItem('ofUsed', JSON.stringify(ofUsed));
+  localStorage.setItem('currentLocation', currentLocation);
+
+  if (currentLocation) {
+    const keyPrefix = 'loc_' + btoa(currentLocation).replace(/=/g,'');
+    localStorage.setItem(keyPrefix + '_ch', JSON.stringify(subChecked));
+    localStorage.setItem(keyPrefix + '_idx', subIndex);
+  }
+  localStorage.setItem('subCh3', JSON.stringify(subChecked));
+  localStorage.setItem('subIdx3', subIndex);
+};
+
+let baseIP = localStorage.getItem('selectedBaseIP') || '192.168.1';
+function updateToggleButton() {
+  const btn = document.getElementById('ipToggle');
+  if (baseIP === '192.168.1') {
+    btn.textContent = '192.168.1.x';
+    btn.style.background = 'var(--orange)';
+    btn.style.border = '3px solid black';
+    btn.style.color = 'black';
+  } else {
+    btn.textContent = 'FULL IP MODE';
+    btn.style.background = 'black';
+    btn.style.border = '3px solid var(--orange)';
+    btn.style.color = 'white';
+  }
+}
+document.getElementById('ipToggle').onclick = () => {
+  baseIP = baseIP === '192.168.1' ? 'FULL' : '192.168.1';
+  localStorage.setItem('selectedBaseIP', baseIP);
+  updateToggleButton();
+  showToast(baseIP === 'FULL' ? '🌐 Full IP mode' : '🏠 Local IP mode');
+};
+function triggerLua() {
+  const input = document.getElementById("ipInput").value.trim();
+  if (!input) return;
+  let finalIP;
+  if (baseIP === '192.168.1') {
+    if (isNaN(input)) return;
+    finalIP = `192.168.1.${input}`;
+  } else {
+    finalIP = input;
+  }
+  const url = `http://${finalIP}:8080/control/start_playing?path=/test.lua&t=${Date.now()}`;
+  new Image().src = url;
+  showToast(`✅ Triggered: ${finalIP}`);
+}
+updateToggleButton();
+
+const render = (id, data, used) => {
+  const ul = document.getElementById(id);
+  ul.innerHTML = '';
+  data.forEach((item, i) => {
+    const div = document.createElement('div');
+    div.className = 'list-item' + (used[item] ? ' checked' : '');
+    
+    const checkbox = document.createElement('input');
+    checkbox.type = 'checkbox';
+    checkbox.checked = !!used[item];
+    checkbox.onchange = () => { 
+      used[item] = !used[item]; 
+      save(); 
+      render(id, data, used); 
+      updateStats(); 
+    };
+    
+    const text = document.createElement('div');
+    text.className = 'list-item-text';
+    text.textContent = item;
+    
+    const deleteBtn = document.createElement('button');
+    deleteBtn.className = 'list-item-delete';
+    deleteBtn.textContent = '×';
+    deleteBtn.onclick = () => {
+      if(confirm('Delete this item?')) {
+        data.splice(i, 1);
+        delete used[item];
+        if (id === 'subList') updateLocationsAfterDelete();
+        save();
+        render(id, data, used);
+        updateStats();
+      }
+    };
+    
+    div.appendChild(checkbox);
+    div.appendChild(text);
+    div.appendChild(deleteBtn);
+    ul.appendChild(div);
+  });
+};
+
+function updateLocationsAfterDelete() {
+  if (currentLocation) locations[currentLocation] = subs;
+}
+
+const updateStats = () => {
+  document.getElementById('subCount').textContent = subs.length;
+  document.getElementById('subDone').textContent = Object.values(subChecked).filter(v=>v).length;
+  document.getElementById('subBadge').textContent = `${Object.values(subChecked).filter(v=>v).length}/${subs.length}`;
+  
+  document.getElementById('testCount').textContent = testSubs.length;
+  document.getElementById('testDone').textContent = Object.values(testChecked).filter(v=>v).length;
+  document.getElementById('testBadge').textContent = `${Object.values(testChecked).filter(v=>v).length}/${testSubs.length}`;
+  
+  document.getElementById('capCount').textContent = captions.length;
+  document.getElementById('capUsed').textContent = Object.values(capUsed).filter(v=>v).length;
+  document.getElementById('capBadge').textContent = `${Object.values(capUsed).filter(v=>v).length}/${captions.length}`;
+  
+  updateIPHeader();
+};
+
+document.getElementById('subrReset').onclick = () => { 
+  if(confirm("Reset progress for current location?")) { 
+    subChecked = {}; 
+    subIndex = 0; 
+    save(); 
+    render('subList', subs, subChecked); 
+    updateStats(); 
+  }
+};
+
+document.getElementById('captionReset').onclick = () => { 
+  if(confirm("Reset all captions?")) { 
+    capUsed = {}; 
+    save(); 
+    render('captionList', captions, capUsed); 
+    updateStats(); 
+  }
+};
+
+document.getElementById('testReset').onclick = () => { 
+  if(confirm("Reset test subs progress?")) { 
+    testChecked = {}; 
+    testIndex = 0; 
+    save(); 
+    render('testList', testSubs, testChecked); 
+    updateStats(); 
+  }
+};
+
+document.getElementById('toggleSub').onclick = () => { 
+  const l = document.getElementById('subList'); 
+  l.style.display = l.style.display === 'block' ? 'none' : 'block'; 
+};
+
+document.getElementById('toggleCap').onclick = () => { 
+  const l = document.getElementById('captionList'); 
+  l.style.display = l.style.display === 'block' ? 'none' : 'block'; 
+};
+
+document.getElementById('toggleTest').onclick = () => { 
+  const l = document.getElementById('testList'); 
+  l.style.display = l.style.display === 'block' ? 'none' : 'block'; 
+};
+
+document.getElementById('addSubBtn').onclick = (e) => { 
+  e.stopPropagation(); 
+  if (!currentLocation) return alert("Select a location first!");
+  const input = prompt("Add subreddits (one per line, no r/):"); 
+  if (!input) return; 
+  const lines = input.split('\n').map(l => l.trim()).filter(l => l); 
+  let added = 0; 
+  lines.forEach(sub => { 
+    if (sub && !subs.includes(sub)) { 
+      subs.push(sub); 
+      added++; 
+    } 
+  }); 
+  if (added > 0) { 
+    locations[currentLocation] = subs; 
+    save(); 
+    render('subList', subs, subChecked); 
+    updateStats(); 
+    showToast(`✅ Added ${added} to ${currentLocation}`); 
+  } 
+};
+
+document.getElementById('addTestBtn').onclick = (e) => { 
+  e.stopPropagation(); 
+  const input = prompt("Add test subreddits (one per line, no r/):"); 
+  if (!input) return; 
+  const lines = input.split('\n').map(l => l.trim()).filter(l => l); 
+  let added = 0; 
+  lines.forEach(sub => { 
+    if (sub && !testSubs.includes(sub)) { 
+      testSubs.push(sub); 
+      added++; 
+    } 
+  }); 
+  if (added > 0) { 
+    save(); 
+    render('testList', testSubs, testChecked); 
+    updateStats(); 
+    showToast(`✅ Added ${added} test sub${added > 1 ? 's' : ''}`); 
+  } 
+};
+
+document.getElementById('addCapBtn').onclick = (e) => { 
+  e.stopPropagation(); 
+  const input = prompt("Add captions (one per line):"); 
+  if (!input) return; 
+  const lines = input.split('\n').map(l => l.trim()).filter(l => l); 
+  let added = 0; 
+  lines.forEach(cap => { 
+    if (cap && !captions.includes(cap)) { 
+      captions.push(cap); 
+      added++; 
+    } 
+  }); 
+  if (added > 0) { 
+    save(); 
+    render('captionList', captions, capUsed); 
+    updateStats(); 
+    showToast(`✅ Added ${added} caption${added > 1 ? 's' : ''}`); 
+  } 
+};
+
+document.getElementById('subRefresh').onclick = () => loadFromSheet();
+
+function updateCaptionsNow() { 
+  localStorage.removeItem('caps3'); 
+  localStorage.removeItem('capUs3'); 
+  location.reload(); 
+}
+
+let userIP = '', previousIP = '', scamalyticsWindow = null;
+
+function updateIPHeader() { 
+  const ip = document.getElementById('ip').textContent; 
+  document.getElementById('ipHeader').textContent = (ip && ip !== 'Loading...' && !ip.includes('Failed') && !ip.includes('Offline')) ? ip : 'No IP'; 
+}
+
+fetch('https://api.ipify.org?format=json')
+  .then(r => r.json())
+  .then(d => { 
+    userIP = d.ip; 
+    document.getElementById("ip").textContent = userIP; 
+    updateIPHeader(); 
+    fetchIPLocation(userIP);
+  })
+  .catch(() => { 
+    document.getElementById("ip").textContent = "Offline";
+    document.getElementById("ipLocation").textContent = "—";
+    updateIPHeader(); 
+  });
+
+function rotateIP() { 
+  const btn = document.querySelector('.rotate-btn');
+  const url = document.getElementById("rotateLink").value.trim(); 
+  if (!url) return alert("Enter rotation URL"); 
+  btn.disabled = true; 
+  btn.innerHTML = "⏳ Starting..."; 
+  new Image().src = url + (url.includes('?') ? '&' : '?') + 't=' + Date.now(); 
+  let s = 8; 
+  const timer = setInterval(() => { 
+    s--; 
+    btn.innerHTML = s > 0 ? `⏳ ${s}s...` : "✅ Done!"; 
+    if (s <= 0) clearInterval(timer); 
+  }, 1000); 
+  setTimeout(() => { 
+    btn.innerHTML = "🔄 Go"; 
+    btn.disabled = false; 
+    showToast("🔄 Rotation triggered!"); 
+  }, 8500); 
+}
+
+function refreshAndOpen() { 
+  const btn = event.target;
+  btn.disabled = true; 
+  btn.innerHTML = "⏳ Loading..."; 
+  if (!scamalyticsWindow || scamalyticsWindow.closed) {
+    scamalyticsWindow = window.open('about:blank', '_blank'); 
+  }
+  fetch('https://api.ipify.org?format=json')
+    .then(r => r.json())
+    .then(d => { 
+      if(userIP) { 
+        previousIP = userIP; 
+        document.getElementById("oldIP").textContent = previousIP; 
+      } 
+      userIP = d.ip; 
+      document.getElementById("ip").textContent = userIP; 
+      updateIPHeader(); 
+      fetchIPLocation(userIP);
+      scamalyticsWindow.location.href = `https://scamalytics.com/ip/${userIP}`; 
+      btn.style.backgroundColor = (previousIP && previousIP !== userIP) ? "#2e7d32" : "#d32f2f"; 
+      btn.innerHTML = (previousIP && previousIP !== userIP) ? "✅ Changed!" : "⚠️ No Change"; 
+    })
+    .catch(() => { 
+      btn.style.backgroundColor = "#b71c1c"; 
+      btn.innerHTML = "❌ Failed"; 
+    })
+    .finally(() => { 
+      btn.disabled = false; 
+    }); 
+}
+
+function showToast(m) { 
+  const t = document.getElementById('toast'); 
+  t.textContent = m; 
+  t.classList.add('show'); 
+  clearTimeout(t.timeout); 
+  t.timeout = setTimeout(() => t.classList.remove('show'), 2000); 
+}
+
+const randomNoRepeat = (arr, used) => {
+  const unused = arr.filter(x => !used[x]);
+  if(unused.length === 0) { 
+    Object.keys(used).forEach(k => delete used[k]); 
+    save(); 
+    showToast("🔄 Reset!"); 
+    return randomNoRepeat(arr, used); 
+  }
+  const pick = unused[Math.floor(Math.random() * unused.length)];
+  navigator.clipboard.writeText(pick); 
+  used[pick] = true; 
+  save(); 
+  triggerLua();
+  showToast("📋 Copied!");
+};
+
+document.getElementById('fabD').onclick = () => randomNoRepeat(dmTexts, dmUsed);
+document.getElementById('fabN').onclick = () => randomNoRepeat(names, nameUsed);
+document.getElementById('fabOF').onclick = () => randomNoRepeat(ofLines, ofUsed);
+document.getElementById('fabLink').onclick = () => { 
+  navigator.clipboard.writeText(linkUrl); 
+  showToast("🔗 Link copied"); 
+  triggerLua(); 
+};
+
+document.getElementById('randomSubBtn').onclick = () => {
+  if (randomSubList.length === 0) return showToast("⚠️ No warming subs");
+  const random = randomSubList[Math.floor(Math.random() * randomSubList.length)];
+  window.open("https://www.reddit.com/r/" + random, "_blank");
+  showToast("🎲 Opened r/" + random);
+};
+
+document.getElementById('comboFab').onclick = () => {
+  if (!currentLocation || subs.length === 0) return showToast("⚠️ Select a location with subs!");
+  let sub = ''; 
+  let startIndex = subIndex;
+  do { 
+    sub = subs[subIndex]; 
+    if (!subChecked[sub]) break; 
+    subIndex = (subIndex + 1) % subs.length; 
+  } while (subIndex !== startIndex);
+  
+  if (subChecked[sub]) { 
+    subChecked = {}; 
+    subIndex = 0; 
+    save(); 
+    showToast("🔄 All used in " + currentLocation + " → Reset!"); 
+  }
+  
+  subChecked[sub] = true; 
+  subIndex = (subIndex + 1) % subs.length; 
+  save();
+  
+  const unusedCaps = captions.filter(c => !capUsed[c]);
+  if (unusedCaps.length === 0) { 
+    capUsed = {}; 
+    save(); 
+    showToast("🔄 Captions reset!"); 
+  }
+  const caption = unusedCaps.length ? unusedCaps[Math.floor(Math.random() * unusedCaps.length)] : captions[Math.floor(Math.random() * captions.length)];
+  capUsed[caption] = true; 
+  save();
+  
+  const encodedTitle = encodeURIComponent(caption.trim());
+  const redditUrl = `https://www.reddit.com/r/${sub}/submit?title=${encodedTitle}`;
+  window.open(redditUrl, '_blank');
+  
+  render('subList', subs, subChecked); 
+  render('captionList', captions, capUsed); 
+  updateStats();
+  navigator.clipboard.writeText(sub); 
+  showToast(`🚀 SAP → r/${sub} (${currentLocation})`);
+};
+
+document.getElementById('testComboFab').onclick = () => {
+  if (testSubs.length === 0) return showToast("⚠️ No test subs!");
+  let sub = ''; 
+  let startIndex = testIndex;
+  do { 
+    sub = testSubs[testIndex]; 
+    if (!testChecked[sub]) break; 
+    testIndex = (testIndex + 1) % testSubs.length; 
+  } while (testIndex !== startIndex);
+  
+  if (testChecked[sub]) { 
+    testChecked = {}; 
+    testIndex = 0; 
+    save(); 
+    showToast("🔄 All test used → Reset!"); 
+  }
+  
+  testChecked[sub] = true; 
+  testIndex = (testIndex + 1) % testSubs.length; 
+  save();
+  
+  const unusedCaps = captions.filter(c => !capUsed[c]);
+  if (unusedCaps.length === 0) { 
+    capUsed = {}; 
+    save(); 
+    showToast("🔄 Captions reset!"); 
+  }
+  const caption = unusedCaps.length ? unusedCaps[Math.floor(Math.random() * unusedCaps.length)] : captions[Math.floor(Math.random() * captions.length)];
+  capUsed[caption] = true; 
+  save();
+  
+  const encodedTitle = encodeURIComponent(caption.trim());
+  const redditUrl = `https://www.reddit.com/r/${sub}/submit?title=${encodedTitle}`;
+  window.open(redditUrl, '_blank');
+  
+  render('testList', testSubs, testChecked); 
+  render('captionList', captions, capUsed); 
+  updateStats();
+  navigator.clipboard.writeText(sub); 
+  showToast(`🧪 Test → r/${sub}`);
+};
+
+let profileData = []; 
+let currentRow = 2; 
+let currentIndex = parseInt(localStorage.getItem('lastProfileIndex') || '0');
+
+function loadProfiles() { 
+  fetch(PROFILE_URL + "?action=read&t=" + Date.now())
+    .then(r => r.json())
+    .then(d => { 
+      profileData = d.values || []; 
+      if (profileData.length === 0) { 
+        showToast("⚠️ Profile sheet is empty"); 
+        clearProfileFields(); 
+      } else { 
+        if (currentIndex >= profileData.length) currentIndex = profileData.length - 1; 
+        loadProfile(currentIndex); 
+        showToast(`👤 Profile ${currentIndex + 1}/${profileData.length} loaded`); 
+      } 
+    })
+    .catch(() => showToast("⚠️ Profile sheet offline")); 
+}
+
+function clearProfileFields() { 
+  document.getElementById('profileName').value = ''; 
+  document.getElementById('profilePass').value = ''; 
+  document.getElementById('profileUser').value = ''; 
+  document.getElementById('profileID').value = ''; 
+}
+
+function loadProfile(index) { 
+  if (profileData.length === 0) return; 
+  if (index < 0) index = 0; 
+  if (index >= profileData.length) index = profileData.length - 1; 
+  const row = profileData[index]; 
+  document.getElementById('profileName').value = row[0] || ''; 
+  document.getElementById('profilePass').value = row[1] || ''; 
+  document.getElementById('profileUser').value = row[2] || ''; 
+  document.getElementById('profileID').value = row[3] || ''; 
+  currentRow = index + 2; 
+  currentIndex = index; 
+  localStorage.setItem('lastProfileIndex', index); 
+}
+
+function prevProfile() { 
+  loadProfile(currentIndex - 1); 
+}
+
+function nextProfile() { 
+  loadProfile(currentIndex + 1); 
+}
+
+function generatePassword() {
+  if (document.getElementById('profilePass').value !== '') {
+    return showToast("⚠️ Password field not empty");
+  }
+
+  const words = [
+    "cat", "dog", "sun", "sky", "sea", "pen", "cup", "hat", "map", "run",
+    "walk", "talk", "play", "read", "book", "tree", "rock", "sand", "wind", "rain",
+    "fire", "snow", "moon", "star", "blue", "pink", "gold", "gray", "warm", "cool",
+    "fast", "slow", "jump", "stop", "move", "push", "pull", "hold", "open", "shut",
+    "time", "hour", "day", "week", "year", "life", "love", "hope", "calm", "kind"
+  ];
+
+  // Random number of words: 3 to 7 (adjust if you want longer/shorter)
+  const numWords = Math.floor(Math.random() * 5) + 3;
+
+  // Shuffle the array and pick the first numWords (Fisher-Yates shuffle for fairness)
+  const shuffled = words.slice(); // copy array
+  for (let i = shuffled.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+  }
+  const selectedWords = shuffled.slice(0, numWords);
+
+  // Join with hyphens
+  const randomPart = selectedWords.join("");
+
+  const finalPassword = "reddit" + randomPart;
+
+  document.getElementById('profilePass').value = finalPassword;
+  copyText('profilePass');
+  showToast(`🔑 Generated & copied!`);
+}
+
+async function pasteUsername() { 
+  try { 
+    const text = await navigator.clipboard.readText(); 
+    document.getElementById('profileUser').value = text.trim(); 
+    showToast("📋 Username pasted"); 
+  } catch { 
+    showToast("⚠️ Paste failed (allow clipboard)"); 
+  } 
+}
+
+function saveProfile() { 
+  const pass = document.getElementById('profilePass').value.trim(); 
+  const user = document.getElementById('profileUser').value.trim(); 
+  if (!pass || !user) return showToast("⚠️ Fill Password & Username"); 
+  fetch(`${PROFILE_URL}?action=write&row=${currentRow}&pass=${encodeURIComponent(pass)}&user=${encodeURIComponent(user)}&t=${Date.now()}`)
+    .then(r => r.json())
+    .then(() => { 
+      showToast("✅ Saved to sheet"); 
+      profileData[currentIndex][1] = pass; 
+      profileData[currentIndex][2] = user; 
+    })
+    .catch(() => showToast("❌ Save failed")); 
+}
+
+function copyText(id) { 
+  const el = document.getElementById(id); 
+  el.focus(); 
+  el.select(); 
+  navigator.clipboard.writeText(el.value); 
+  showToast("📋 " + (el.placeholder || el.id) + " copied"); 
+}
+
+function fetchIPLocation(ip) {
+  fetch(`https://ipapi.co/${ip}/json/`)
+    .then(r => r.json())
+    .then(data => {
+      if (data.error) throw new Error('ipapi.co failed');
+      let location = '';
+      if (data.city && data.region && data.country_name) {
+        location = `${data.city}, ${data.region}, ${data.country_name}`;
+      } else if (data.region && data.country_name) {
+        location = `${data.region}, ${data.country_name}`;
+      } else if (data.country_name) {
+        location = data.country_name;
+      }
+      document.getElementById("ipLocation").textContent = location || "Location unknown";
+    })
+    .catch(() => {
+      fetch(`http://ip-api.com/json/${ip}?fields=status,city,regionName,country`)
+        .then(r => r.json())
+        .then(data => {
+          if (data.status === 'success') {
+            let location = '';
+            if (data.city && data.regionName && data.country) {
+              location = `${data.city}, ${data.regionName}, ${data.country}`;
+            } else if (data.regionName && data.country) {
+              location = `${data.regionName}, ${data.country}`;
+            } else if (data.country) {
+              location = data.country;
+            }
+            document.getElementById("ipLocation").textContent = location || "Location unknown";
+          } else {
+            document.getElementById("ipLocation").textContent = "Location unavailable";
+          }
+        })
+        .catch(() => {
+          document.getElementById("ipLocation").textContent = "Location unavailable";
+        });
+    });
+}
+
+document.getElementById('fabCreate').onclick = () => { 
+  const currentID = document.getElementById('profileID').value.trim(); 
+  if (!currentID) { 
+    showToast("⚠️ No ID loaded"); 
+    return; 
+  } 
+  navigator.clipboard.writeText(currentID); 
+  window.location.href = "shortcuts://run-shortcut?name=CreateRed"; 
+  showToast("🚀 ID copied → CreateRed launched"); 
+};
+
+window.addEventListener('load', () => {
+  updateToggleButton();
+  updateIPHeader();
+  loadFromSheet();
+  loadProfiles();
+  startUsernameChecker();
+});
+
+// Stop checker when page unloads
+window.addEventListener('beforeunload', () => {
+  stopUsernameChecker();
+});
+</script>
+</body>
+</html>
